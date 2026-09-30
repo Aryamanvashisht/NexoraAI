@@ -23,3 +23,13 @@ Thumbs.db
 serviceAccountKey.json
 *serviceAccount*.json
 *-firebase-adminsdk-*.json
+
+# Frontend extras
+coverage/
+.eslintcache
+.cache/
+.vite/
+*.local
+*.tsbuildinfo
+yarn-error.log*
+pnpm-debug.log*
