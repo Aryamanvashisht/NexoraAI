@@ -2,6 +2,8 @@ import express from 'express'
 import proxy from 'express-http-proxy'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
+import { getCurrentUser } from './controllers/user.controller.js';
+import protect from './middleware/auth.middleware.js';
 
 const PORT = process.env.PORT
 const AUTH_SERVICE = process.env.AUTH_SERVICE;
@@ -17,6 +19,7 @@ app.use(cookieParser())
 
 app.use("/auth", proxy(AUTH_SERVICE));
 
+app.get("/me", protect, getCurrentUser);
 app.get("/", (req, res) => {
     res.send("Hello world")
 })
