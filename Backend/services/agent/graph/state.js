@@ -3,5 +3,6 @@ import { Annotation } from "@langchain/langgraph"
 export const agentState = Annotation.Root({
     prompt: Annotation(),
     aiResponse: Annotation(),
-    agentUsed:Annotation()
+    agentUsed: Annotation(),
+    conversationId:Annotation()
 })
