@@ -4,6 +4,9 @@ import api from "../../utils/axios.js";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import {setUserData} from "../redux/userSlice.js"
+import { Sidebar } from "../components/Sidebar.jsx";
+import Chatarea from "../components/Chatarea.jsx";
+import Artifact from "../components/Artifact.jsx";
 
 const Home = () => {
   const { userData } = useSelector(state => state.user)
@@ -27,6 +30,9 @@ const Home = () => {
   };
   return (
     <div className="h-screen bg-[#0d0f14] text-white flex overflow-hidden">
+      <Sidebar />
+      <Chatarea />
+      <Artifact/>
       {!userData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur">
           <div className="w-85 bg-[#13151c] border border-white/8 rounded-2xl p-7 flex flex-col gap-5">
