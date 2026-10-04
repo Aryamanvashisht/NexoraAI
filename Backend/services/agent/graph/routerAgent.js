@@ -63,6 +63,6 @@ ${state.prompt}
     console.log(response);
 return {
   ...state,
-  agentUsed:response.content.trim().tolowerCase()
+  agentUsed:response.content.trim().toLowerCase()
 };
 };
