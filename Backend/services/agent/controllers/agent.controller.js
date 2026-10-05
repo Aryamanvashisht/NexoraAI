@@ -4,7 +4,7 @@ import { addMessage } from "../config/memory.js";
 
 export const agent = async (req, res) => {
   try {
-    const { prompt, conversationId } = req.body;
+    const { prompt, conversationId,agent } = req.body;
     await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
       conversationId,
       role: "user",
@@ -14,6 +14,7 @@ export const agent = async (req, res) => {
     const result = await graph.invoke({
       prompt,
       conversationId,
+      agent
     });
     const response = result.aiResponse;
     
@@ -24,8 +25,14 @@ export const agent = async (req, res) => {
       conversationId,
       role: "assistant",
       content: response,
+      images:response.images
     });
-    return res.status(200).json(response);
+    return res.status(200).json(
+      {
+        answer: response,
+        images:response.images
+      }
+    );
   } catch (error) {
     return res.status(500).json({ message: `Error fetching Agent:${error}` });
   }
