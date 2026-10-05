@@ -1,26 +1,28 @@
-import {Mic, Paperclip, Send}  from "lucide-react"
+import { Mic, Paperclip, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sendMessage from "../features/sendMessage.js";
-
+import { addMessage } from "../redux/messageSlice.js";
 
 const Chatinput = () => {
-
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState("");
   const { selectedConversation } = useSelector((state) => state.conversation);
   const dispatch = useDispatch();
 
   const handleSendMessage = () => {
     const sendMsg = async () => {
       const payload = {
-        prompt:value.trim(),
-        conversationId:selectedConversation?._id
+        prompt: value.trim(),
+        conversationId: selectedConversation?._id,
       };
-    const data = await sendMessage(payload);
+      dispatch(addMessage({ role: "user", content: value.trim() }));
+      const data = await sendMessage(payload);
       console.log(data);
-    }
-    sendMsg()
-  }
+      dispatch(addMessage({ role: "assistant", content:data}));
+    };
+    sendMsg();
+    setValue("")
+  };
 
   return (
     <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/6 bg-[#0d0f14]">
