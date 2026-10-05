@@ -5,8 +5,15 @@ import { getMemory } from "../config/memory.js";
 export const chatAgent = async(state) => {
     const llm = getModel("chat")
     const history = await getMemory(state.conversationId)
+
+    const searchContext = state.searchResults ? `Web Search Results: ${JSON.stringify(state.searchResults)} Answer the user using only the above search results`:""
     const systemPrompt = `
 You are NexoraAI, an intelligent AI assistant.
+
+${searchContext}
+If SearchContext exists:
+- Use Search Results to answer.
+- Do not mention internal tools.
 
 Rules:
 - For simple questions, greetings, and short queries, respond naturally in plain text.
