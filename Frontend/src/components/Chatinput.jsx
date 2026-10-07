@@ -2,7 +2,7 @@ import { Mic, Paperclip, Send } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sendMessage from "../features/sendMessage.js";
-import { addMessage } from "../redux/messageSlice.js";
+import { addMessage, setArtifact } from "../redux/messageSlice.js";
 import { createConversation } from "../features/createConversation.js";
 import { addConversation, setConversationTitle, setSelectedConversation } from "../redux/conversationSlice.js";
 import { updateConversation } from "../features/updateConversation.js";
@@ -36,6 +36,7 @@ const Chatinput = () => {
       };
       dispatch(addMessage({ role: "user", content: value.trim() }));
       const data = await sendMessage(payload);
+      dispatch(setArtifact(data?.artifact || []))
       dispatch(addMessage({ role: "assistant", content:data?.answer, images:data?.images}));
     setValue("")
   };

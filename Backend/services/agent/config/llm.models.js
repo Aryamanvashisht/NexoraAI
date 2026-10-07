@@ -1,5 +1,6 @@
 import { ChatGroq } from "@langchain/groq"
-import {ChatGoogleGenerativeAI} from "@langchain/google-genai"
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai"
+import { ChatOpenRouter } from "@langchain/openrouter"
 
 const groqllm = new ChatGroq({
   model: "openai/gpt-oss-120b",
@@ -14,6 +15,12 @@ const geminillm = new ChatGoogleGenerativeAI({
   maxRetries: 2,
 });
 
+const openrouterllm = new ChatOpenRouter({
+    model: "deepseek/deepseek-chat",
+    temperature: 0,
+    maxTokens:2500
+})
+
 export const getModel = (agent) => {
         switch (agent) {
             case "chat":
@@ -21,7 +28,7 @@ export const getModel = (agent) => {
             case "search":
                 return groqllm;
             case "coding":
-                return geminillm;
+                return openrouterllm;
 
             default:
                 return groqllm;
