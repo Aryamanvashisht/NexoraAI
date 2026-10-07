@@ -19,6 +19,7 @@ import {
 import { createConversation } from "../features/createConversation.js";
 import logoutUser from "../features/logoutUser.js";
 import { setUserData } from "../redux/userSlice.js";
+import { easeInOut, motion } from "motion/react";
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
