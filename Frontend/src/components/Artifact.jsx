@@ -1,21 +1,39 @@
-import { Code2, Copy, Eye, PanelRightClose, PanelRightOpen } from "lucide-react";
+import {
+  Check,
+  Code2,
+  Copy,
+  Eye,
+  PanelRightClose,
+  PanelRightOpen,
+} from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { easeInOut, motion } from "motion/react";
+import Editor from "@monaco-editor/react";
+import {detectLanguage} from "../../utils/detectLanguage.js"
 
 const Artifact = () => {
   const { artifact } = useSelector((state) => state.message);
-  const [collapse, setCollapsed] = useState(false);
-  const [tab, setTab] = useState("code")
-  const[activeFile,setActiveFile] = useState(0)
-  if (!artifact ||artifact.length === 0) return null;
- 
+  const [collapse, setCollapsed] = useState(true);
+  const [tab, setTab] = useState("preview");
+  const [activeFile, setActiveFile] = useState(0);
+  const [copyCode, setCopyCode] = useState(false);
+  if (!artifact || artifact.length === 0) return null;
+
   const files = artifact[0]?.files || [];
-  const file = files[activeFile]?.content || "";
+  const file = artifact[0]?.files[activeFile]
   const htmlFile = files.find((f) => f.name === "index.html");
   const cssFile = files.find((f) => f.name === "style.css");
   const jsFile = files.find((f) => f.name === "script.js");
   const canPreview = Boolean(htmlFile);
+
+   const handleCopyCode = async (code) => {
+     await navigator.clipboard.writeText(code);
+     setCopyCode(true);
+     setTimeout(() => {
+       setCopyCode(false);
+     }, 1000);
+   };
 
   const buildPreviewDoc = () => {
     let html = htmlFile?.content || "";
@@ -34,13 +52,12 @@ const Artifact = () => {
 
     return html;
   };
-const previewDoc = buildPreviewDoc();
-
+  const previewDoc = buildPreviewDoc();
 
   return (
     <motion.div
-      initial={{ width: 325 }}
-      animate={{ width: collapse ? 48 : 325 }}
+      initial={{ width: 48 }}
+      animate={{ width: collapse ? 48 : 400 }}
       transition={{
         duration: 0.25,
         ease: easeInOut,
@@ -66,8 +83,11 @@ const previewDoc = buildPreviewDoc();
             </div>
 
             <div className="flex items-center gap-1 shrink-0">
-              <button className="flex items-center gap-1.5 px-2.5 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors duration-150 bg-transparent border-none cursor-pointer">
-                <Copy size={17} />
+              <button
+                className="flex items-center gap-1.5 px-2.5 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/5 rounded-lg transition-colors duration-150 bg-transparent border-none cursor-pointer"
+                onClick={() => handleCopyCode(file?.content)}
+              >
+                {copyCode ? <Check size={17} /> : <Copy size={17} />}
               </button>
             </div>
             {canPreview && (
@@ -122,12 +142,27 @@ const previewDoc = buildPreviewDoc();
               </motion.div>
             ) : (
               <motion.div
-                className="h-full overflow-auto p-4 text-xs text-slate-300 whitespace-pre-wrap"
-                initial={{}}
-                animate={{}}
-                transition={{}}
+                className="h-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
-                {file}
+                <Editor
+                  theme="vs-dark"
+                  language={detectLanguage(file?.name)}
+                  value={file?.content}
+                  options={{
+                    readOnly: true,
+                    minimap: { enabled: false },
+                    fontSize: 13,
+                    wordWrap: "on",
+                    automaticLayout: true,
+                    scrollBeyondLastLine: false,
+                    padding: { top: 16 },
+                    lineNumbers: "on",
+                    renderLineHighlight: "none",
+                  }}
+                />
               </motion.div>
             )}
           </div>

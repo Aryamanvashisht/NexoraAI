@@ -71,6 +71,13 @@ ${state.prompt}
         -Beautiful Spacing
         -Single Page unless user asks otherwise.
 
+        IMAGES
+        ========================
+
+        Always use real Unsplash images.
+
+        Never use placeholders.
+
         Return only valid JSON.
 
         Schema.
