@@ -31,4 +31,9 @@ export const AGENTS = [
     icon:Globe,
     label:"Search"
   },
+  {
+    id: "imageGen",
+    icon: ImageIcon,
+    label:"ImageGen"
+  }
 ];

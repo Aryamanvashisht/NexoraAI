@@ -1,12 +1,13 @@
 import { getModel } from "../config/llm.models.js";
+import {VALID_AGENTS} from "../agents/utils/allAgents.js"
 
 export const routerAgent = async (state) => {
 
-  if (state.agentUsed && state.agentUsed !== "auto") {
+  if (state.agentUsed && state.agentUsed !== "auto" && VALID_AGENTS.includes(state.agentUsed)) {
     return {
       ...state,
-      agentUsed:state.agentUsed
-    }
+      agentUsed: state.agentUsed,
+    };
   }
 
   const llm = getModel("router");
@@ -19,7 +20,7 @@ Available agents:
 - coding
 - pdf
 - ppt
-- image
+- imagegen
 
 Rules:
 
@@ -51,7 +52,7 @@ ppt:
 Questions about generate ppts
 or ppt context.
 
-image:
+imagegen:
 Generate or edit images.
 
 Return ONLY one word:
@@ -61,7 +62,7 @@ search
 coding
 pdf
 ppt
-image
+imagegen
 
 User Prompt:
 ${state.prompt}

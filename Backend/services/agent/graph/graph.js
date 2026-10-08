@@ -17,7 +17,7 @@ workflow.addNode("search",searchAgent)
 workflow.addNode("coding",codingAgent)
 workflow.addNode("pdf",pdfAgent)
 workflow.addNode("ppt",pptAgent)
-workflow.addNode("imageGen",imageGenAgent)
+workflow.addNode("imagegen",imageGenAgent)
 
 workflow.addEdge("__start__", "agent-router")
 workflow.addConditionalEdges(
@@ -32,6 +32,6 @@ workflow.addEdge("chat","__end__")
 workflow.addEdge("coding","__end__")
 workflow.addEdge("pdf","__end__")
 workflow.addEdge("ppt","__end__")
-workflow.addEdge("imageGen", "__end__")
+workflow.addEdge("imagegen", "__end__")
 
 export const graph = workflow.compile()
