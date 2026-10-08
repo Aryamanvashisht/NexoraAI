@@ -4,7 +4,7 @@ import Messagelist from "./Messagelist"
 import Navbar from "./Navbar"
 import { useDispatch, useSelector } from "react-redux"
 import getMessages from "../features/getMessages.js"
-import { setMessages } from "../redux/messageSlice.js"
+import { setArtifact, setMessages } from "../redux/messageSlice.js"
 
 const Chatarea = () => {
   const {selectedConversation} = useSelector(state=>state.conversation)
@@ -15,6 +15,8 @@ const Chatarea = () => {
         if (selectedConversation.title === "New Chat") return;
         const data = await getMessages(selectedConversation?._id);
         dispatch(setMessages(data));
+        const latestArtifactMessage = [...data].reverse().find(msg=>msg.artifact && msg.artifact.length>0)
+        dispatch(setArtifact(latestArtifactMessage?.artifact || []));
       }
     };
     getMsg();

@@ -8,16 +8,12 @@ const Artifact = () => {
   const [collapse, setCollapsed] = useState(false);
   const [tab, setTab] = useState("code")
   const[activeFile,setActiveFile] = useState(0)
-  if (!artifact ||artifact.length === 0) return null;
+  if (artifact.length === 0) return;
  
-  const files = artifact[0]?.files || [];
-  const file = files[activeFile]?.content || "";
-  const htmlFile = files.find((f) => f.name === "index.html");
-  const cssFile = files.find((f) => f.name === "style.css");
-  const jsFile = files.find((f) => f.name === "script.js");
-  const canPreview = Boolean(htmlFile);
-
   const buildPreviewDoc = () => {
+      const htmlFile = artifact[0]?.files?.find(f => f.name === "index.html")
+      const cssFile = artifact[0]?.files?.find(f => f.name === "style.css")
+      const jsFile = artifact[0]?.files?.find(f => f.name === "script.js")
     let html = htmlFile?.content || "";
     const css = cssFile?.content || "";
     const js = jsFile?.content || "";
@@ -34,8 +30,6 @@ const Artifact = () => {
 
     return html;
   };
-const previewDoc = buildPreviewDoc();
-
 
   return (
     <motion.div
@@ -90,9 +84,8 @@ const previewDoc = buildPreviewDoc();
 
           {tab === "code" && (
             <div className="h-auto flex border-b border-white/6 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden shrink-0">
-              {files?.map((f, i) => (
+              {artifact[0]?.files?.map((f, i) => (
                 <button
-                  key={i}
                   onClick={() => setActiveFile(i)}
                   className={`px-4 py-2.5 text-[11px] font-medium whitespace-nowrap transition-colors duration-150 border-r border-white/5 relative cursor-pointer bg-transparent ${activeFile === i ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"}`}
                 >
@@ -114,7 +107,7 @@ const previewDoc = buildPreviewDoc();
                 transition={{ duration: 0.5 }}
               >
                 <iframe
-                  srcDoc={previewDoc}
+                  srcDoc={()=>buildPreviewDoc()}
                   title="Preview"
                   sandbox="allow-scripts"
                   className="h-full w-full bg-white"
@@ -122,13 +115,10 @@ const previewDoc = buildPreviewDoc();
               </motion.div>
             ) : (
               <motion.div
-                className="h-full overflow-auto p-4 text-xs text-slate-300 whitespace-pre-wrap"
                 initial={{}}
                 animate={{}}
                 transition={{}}
-              >
-                {file}
-              </motion.div>
+              ></motion.div>
             )}
           </div>
         </div>
