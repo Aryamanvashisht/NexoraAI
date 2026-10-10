@@ -11,6 +11,7 @@ const PORT = process.env.PORT;
 const AUTH_SERVICE = process.env.AUTH_SERVICE;
 const CHAT_SERVICE = process.env.CHAT_SERVICE;
 const AGENT_SERVICE = process.env.AGENT_SERVICE;
+const BILLING_SERVICE = process.env.BILLING_SERVICE;
 const app = express();
 app.use(
   cors({
@@ -24,7 +25,8 @@ app.use(morgan("dev"));
 
 app.use("/auth", proxy(AUTH_SERVICE));
 app.use("/chat", protect, proxyWithHeaders(CHAT_SERVICE));
-app.use("/agent",protect,proxy(AGENT_SERVICE));
+app.use("/agent", protect, proxy(AGENT_SERVICE));
+app.use("/billing", protect, proxyWithHeaders(BILLING_SERVICE));
 app.get("/me", protect, getCurrentUser);
 
 app.get("/", (req, res) => {
