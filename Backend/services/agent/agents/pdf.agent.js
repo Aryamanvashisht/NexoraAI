@@ -2,6 +2,7 @@ import { getModel } from "../config/llm.models.js";
 import { generatePdf } from "./utils/generatePdf.js";
 import { uploadToS3 } from "../agents/utils/uploadToS3.js";
 import { getFromS3 } from "../agents/utils/getFromS3.js";
+import { deductCredits } from "./utils/deductCredits.js";
 
 export const pdfAgent = async (state) => {
   try {
@@ -48,11 +49,11 @@ ${state.prompt}
     const res = await llm.invoke(prompt);
     const raw = res.content.replace(/```json|```/g, "").trim();
     const data = JSON.parse(raw);
+    await deductCredits(state.userId, "pdf");
     const pdfBuffer = await generatePdf(data);
     const filename = `pdf-${Date.now()}.pdf`;
     await uploadToS3(filename, pdfBuffer, "application/pdf");
     const downloadUrl = await getFromS3(filename, 24 * 60);
-
     return {
       ...state,
       aiResponse: `# PDF Generated Successfully

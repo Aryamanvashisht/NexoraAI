@@ -1,4 +1,5 @@
 import { getModel } from "../config/llm.models.js";
+import { deductCredits } from "./utils/deductCredits.js";
 
 export const codingAgent = async (state) => {
   try {
@@ -113,7 +114,7 @@ ${state.prompt}
 `;
       const res = await openrouterllm.invoke(prompt);
       const data = JSON.parse(res.content);
-      console.log(data);
+      await deductCredits(state.userId, "coding");
       return {
         ...state,
         aiResponse: "Code Generated Succesfully.",
@@ -154,7 +155,7 @@ ${state.prompt}
         User Request:
         ${state.prompt}
         `);
-
+    await deductCredits(state.userId, "coding");
     return {
       ...state,
       aiResponse: res?.content,

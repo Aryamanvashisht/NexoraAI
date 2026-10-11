@@ -25,7 +25,7 @@ app.use(morgan("dev"));
 
 app.use("/auth", proxy(AUTH_SERVICE));
 app.use("/chat", protect, proxyWithHeaders(CHAT_SERVICE));
-app.use("/agent", protect, proxy(AGENT_SERVICE));
+app.use("/agent", protect, proxyWithHeaders(AGENT_SERVICE));
 app.use("/billing", protect, proxyWithHeaders(BILLING_SERVICE));
 app.get("/me", protect, getCurrentUser);
 
