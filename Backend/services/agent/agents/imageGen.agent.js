@@ -2,6 +2,7 @@ import axios from "axios";
 import { getModel } from "../config/llm.models.js";
 import { uploadToS3 } from "./utils/uploadToS3.js";
 import { getFromS3 } from "./utils/getFromS3.js";
+import { deductCredits } from "./utils/deductCredits.js";
 
 export const imageGenAgent = async (state) => {
   try {
@@ -36,7 +37,7 @@ User Request: ${state.prompt}
       timeout: 90000,
       headers: { "User-Agent": "Mozilla/5.0" },
     });
-
+   await deductCredits(state.userId, "imagegen");
     const contentType = imageRes.headers["content-type"] || "";
     if (!contentType.startsWith("image/")) {
       throw new Error(
