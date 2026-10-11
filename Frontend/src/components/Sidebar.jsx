@@ -19,11 +19,12 @@ import {
 import { createConversation } from "../features/createConversation.js";
 import logoutUser from "../features/logoutUser.js";
 import { setUserData } from "../redux/userSlice.js";
-import { easeInOut, motion } from "motion/react";
+import BillingDrawer from "./BillingDrawer.jsx";
 
 export const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [showBilling, setShowBilling] = useState(false);
   const { conversations, selectedConversation } = useSelector(
     (state) => state.conversation,
   );
@@ -205,7 +206,9 @@ hover:opacity-90 transition-opacity duration-150"
               </div>
 
               <div className="flex gap-1">
-                <button className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/8 hover:text-slate-400 transition-all duration-150">
+                <button
+                  onClick={()=>setShowBilling(true)}
+                  className="flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/8 hover:text-slate-400 transition-all duration-150">
                   <Coins size={17} />
                 </button>
                 <button
@@ -223,6 +226,9 @@ hover:opacity-90 transition-opacity duration-150"
           )}
         </div>
       </div>
+
+
+      <BillingDrawer open={showBilling} onClose={()=>setShowBilling(false)} />
     </div>
   );
 };
