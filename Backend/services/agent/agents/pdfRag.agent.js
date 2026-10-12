@@ -19,11 +19,11 @@ export const pdfRagAgent = async (state) => {
       chunkSize: 1000,
       chunkOverlap: 200,
     });
-    const docs = splitter.createDocuments([text]);
+    const docs = await splitter.createDocuments([text]);
     const collectionName = `pdf-${Date.now()}`;
     const store = await vectorStore(docs, collectionName);
     const releventDocs = await store.similaritySearch(state.prompt, 5);
-    const context = releventDocs.map((doc) => doc.pageContent).join("/n/n");
+    const context = releventDocs.map((doc) => doc.pageContent).join("\n\n");
     const llm = getModel("pdf-rag");
     const messages = [
       new SystemMessage(
@@ -41,15 +41,16 @@ Rules:
 - Use Markdown formatting when it helps readability.
 - When possible, mention the page number if it is available in the Context.
 `,
+      ),
 new HumanMessage(
 `Context:
 """
 ${context}
 """
-Question: ${state.prompt}`,
-        ),
-      )
-      ];
+Question:
+${state.prompt}`,
+      ),
+    ];
       
 
       const response = await llm.invoke(messages);
@@ -59,7 +60,7 @@ Question: ${state.prompt}`,
           aiResponse:response?.content
       }
   } catch (error) {
-    console.log(error);
+    console.error("PDF analyzer error:", error);
     return {
       ...state,
       aiResponse: "Failed to analyze PDF",
