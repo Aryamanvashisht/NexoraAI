@@ -6,6 +6,7 @@ export const agent = async (req, res) => {
   try {
     const { prompt, conversationId, agent } = req.body;
     const userId = req.headers["x-user-id"]
+    const file = req.file
     await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
       conversationId,
       role: "user",
@@ -16,7 +17,8 @@ export const agent = async (req, res) => {
       prompt,
       conversationId,
       agent,
-      userId
+      userId,
+      file
     });
     const response = result.aiResponse;
     
