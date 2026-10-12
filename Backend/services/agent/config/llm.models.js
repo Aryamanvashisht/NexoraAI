@@ -10,7 +10,7 @@ const groqllm = new ChatGroq({
 });
 
 const geminillm = new ChatGoogleGenerativeAI({
-  model: "gemini-2.5-flash",
+  model: "gemini-3.8-flash",
   temperature: 0,
   maxRetries: 2,
 });

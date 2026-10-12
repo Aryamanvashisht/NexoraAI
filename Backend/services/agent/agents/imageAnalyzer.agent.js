@@ -16,19 +16,17 @@ export const imageAnalyzerAgent = async (state) => {
     const messages = [
       new SystemMessage(
         `
-You are NexoraAI Image Analyzer Agent.
-
-Task: Convert the uploaded image into text.
+You are NexoraAI image analyzer Agent.
 
 Rules:
+
 - Analyze only the uploaded image.
-- Extract all visible text exactly as written, preserving the original order and line breaks.
-- For tables, output them as Markdown tables.
-- For charts or diagrams, list the labels, values, and legends that are visible. Do not interpret beyond what is shown.
-- If part of the image is unclear or unreadable, write [unclear] at that place.
-- If the image contains no text, give a short factual description of what is visible.
-- Do not add assumptions, opinions, or information that is not in the image.
-- Return only the extracted content, with no introduction or closing remarks.
+- Answer the user's question accurately.
+- If text exists in the image, extract it.
+- If charts or tables exist, explain them.
+- If something is unclear, say so.
+- Use Markdown when helpful.
+- Do not hallucinate.
 `,
       ),
       new HumanMessage({
@@ -53,7 +51,8 @@ Rules:
           ...state,
           aiResponse:response.content
       }
-  } catch (error) {
+    } catch (error) {
+      console.error("Image analyzer error:", error);
     return {
       ...state,
       aiResponse: "Failed to analyze image",
