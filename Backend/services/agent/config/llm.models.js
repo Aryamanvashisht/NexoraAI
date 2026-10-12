@@ -23,14 +23,16 @@ const openrouterllm = new ChatOpenRouter({
 
 export const getModel = (agent) => {
         switch (agent) {
-            case "chat":
-                return groqllm;
-            case "search":
-                return groqllm;
-            case "coding":
-                return openrouterllm;
+          case "chat":
+            return groqllm;
+          case "search":
+            return groqllm;
+          case "coding":
+            return openrouterllm;
+          case "imageanalyzer":
+            return geminillm;
 
-            default:
-                return groqllm;
+          default:
+            return groqllm;
         }
 }
