@@ -2,10 +2,13 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { getModel } from "../config/llm.models.js";
 import fs from "fs/promises";
 import { deductCredits } from "./utils/deductCredits.js";
+import { checkAgentLimit } from "../config/agentRateLimit.js";
 
 export const imageAnalyzerAgent = async (state) => {
     try {
       
+        await checkAgentLimit(state.userId, "imageanalyzer");
+        
         if (!state.file?.path) {
             throw new Error("No image file provided");
         }
@@ -55,7 +58,7 @@ Rules:
       console.error("Image analyzer error:", error);
     return {
       ...state,
-      aiResponse: "Failed to analyze image",
+      aiResponse: error?.data?.message ||"Failed to analyze image",
     };
     }
     finally {
