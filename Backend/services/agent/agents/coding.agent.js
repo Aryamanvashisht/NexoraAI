@@ -1,8 +1,11 @@
 import { getModel } from "../config/llm.models.js";
 import { deductCredits } from "./utils/deductCredits.js";
+import { checkAgentLimit } from "../config/agentRateLimit.js";
 
 export const codingAgent = async (state) => {
   try {
+        await checkAgentLimit(state.userId, "coding");
+
     const intentLlm = getModel("intent");
     const openrouterllm = getModel("coding");
     const intentResponse = await intentLlm.invoke(`
@@ -165,8 +168,10 @@ ${state.prompt}
     console.log(`Error in agent-coding ${error}`);
     return {
       ...state,
-    aiResponse: "Something went wrong while processing your request.",
-    artifact: [],
-    }
+      aiResponse:
+        error?.data?.message ||
+        "Something went wrong while processing your request.",
+      artifact: [],
+    };
   }
 };

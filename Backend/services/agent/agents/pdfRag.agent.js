@@ -5,9 +5,14 @@ import vectorStore from "../config/vectorDB.js";
 import { getModel } from "../config/llm.models.js";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { deductCredits } from "./utils/deductCredits.js";
+import { checkAgentLimit } from "../config/agentRateLimit.js";
 
 export const pdfRagAgent = async (state) => {
   try {
+
+     await checkAgentLimit(state.userId, "pdf-rag");
+    
+
     if (!state.file?.path) {
       throw new Error("No pdf file provided");
     }
@@ -63,7 +68,7 @@ ${state.prompt}`,
     console.error("PDF analyzer error:", error);
     return {
       ...state,
-      aiResponse: "Failed to analyze PDF",
+      aiResponse: error?.data?.message ||"Failed to analyze PDF",
     };
   } finally {
       fs.unlink(state.file?.path)

@@ -3,9 +3,13 @@ import { uploadToS3 } from "../agents/utils/uploadToS3.js";
 import { getFromS3 } from "../agents/utils/getFromS3.js";
 import {generatePpt} from "./utils/generatePpt.js"
 import { deductCredits } from "./utils/deductCredits.js";
+import { checkAgentLimit } from "../config/agentRateLimit.js";
 
 export const pptAgent = async (state) => {
   try {
+
+    await checkAgentLimit(state.userId, "ppt");
+    
     const llm = getModel("ppt");
     const prompt = `
 You are a professional presentation designer.
@@ -79,7 +83,7 @@ ${state.prompt}
     console.log(`Error generating ppt ${error}`);
     return {
       ...state,
-      aiResponse: "❌ Failed to generate ppt",
+      aiResponse: error?.data?.message ||"❌ Failed to generate ppt",
     };
   }
 };
