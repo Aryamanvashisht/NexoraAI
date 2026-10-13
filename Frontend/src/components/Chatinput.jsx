@@ -2,7 +2,7 @@ import { FileText, Mic, Paperclip, Send, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sendMessage from "../features/sendMessage.js";
-import { addMessage, setArtifact } from "../redux/messageSlice.js";
+import { addMessage, setArtifact, setIsLoading } from "../redux/messageSlice.js";
 import { createConversation } from "../features/createConversation.js";
 import {
   addConversation,
@@ -22,6 +22,7 @@ const Chatinput = () => {
   const fileRef = useRef(null);
 
   const handleSendMessage = async () => {
+    dispatch(setIsLoading(true))
     let conversation = selectedConversation;
     if (!conversation) {
       const conv = await createConversation();
@@ -51,6 +52,8 @@ const Chatinput = () => {
     setValue("");
     handleRemoveFile();
     const data = await sendMessage(formdata);
+    dispatch(setIsLoading(false));
+
     dispatch(setArtifact(data?.artifact || []));
     dispatch(
       addMessage({

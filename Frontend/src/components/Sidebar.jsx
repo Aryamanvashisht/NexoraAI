@@ -152,7 +152,7 @@ export const Sidebar = () => {
               NexoraAI
             </span>
             <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full tracking-wide">
-              Free
+              {userData?.plan ||"free"}
             </span>
             <button
               className="flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-colors duration-150 bg-transparent border-none cursor-pointer"
@@ -234,7 +234,7 @@ hover:opacity-90 transition-opacity duration-150"
                   <p className="text-[13.5px] font-semibold text-slate-100 truncate ">
                     {userData?.name || "User"}
                   </p>
-                  <p className="text-[11px] text-slate-600 mt-px ">Free Plan</p>
+                  <p className="text-[11px] text-slate-600 mt-px ">{`${userData?.plan} plan` || "Free Plan"}</p>
                 </div>
 
                 <div className="flex gap-1">
