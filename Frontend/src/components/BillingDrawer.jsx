@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { useSelector } from "react-redux";
 import createOrder from "../features/createOrder.js";
 import verifyPayment from "../features/verifyPayment.js";
+import { createPortal } from "react-dom";
 
 const plans = [
   { id: "starter", name: "Starter Plan", price: "₹199", credits: 500 },
@@ -46,7 +47,7 @@ const BillingDrawer = ({ open, onClose }) => {
     }
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -140,7 +141,8 @@ const BillingDrawer = ({ open, onClose }) => {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+     document.body
   );
 };
 
