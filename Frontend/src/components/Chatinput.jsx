@@ -1,8 +1,12 @@
-import { FileText, Mic, Paperclip, Send, X } from "lucide-react";
+import { FileText, Mic, MicOff, Paperclip, Send, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import sendMessage from "../features/sendMessage.js";
-import { addMessage, setArtifact, setIsLoading } from "../redux/messageSlice.js";
+import {
+  addMessage,
+  setArtifact,
+  setIsLoading,
+} from "../redux/messageSlice.js";
 import { createConversation } from "../features/createConversation.js";
 import {
   addConversation,
@@ -20,10 +24,13 @@ const Chatinput = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const dispatch = useDispatch();
   const fileRef = useRef(null);
-  const {isLoading} = useSelector(state=>state.message)
+  const { isLoading } = useSelector((state) => state.message);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef(null);
+  const baseTextRef = useRef("");
 
   const handleSendMessage = async () => {
-    dispatch(setIsLoading(true))
+    dispatch(setIsLoading(true));
     let conversation = selectedConversation;
     if (!conversation) {
       const conv = await createConversation();
@@ -46,7 +53,7 @@ const Chatinput = () => {
     formdata.append("prompt", value.trim());
     formdata.append("conversationId", conversation?._id);
     formdata.append("agent", selectedAgent.toLowerCase());
-    if(selectedFile) formdata.append("file", selectedFile);
+    if (selectedFile) formdata.append("file", selectedFile);
 
     dispatch(addMessage({ role: "user", content: value.trim() }));
 
@@ -75,24 +82,77 @@ const Chatinput = () => {
 
   const previewUrl = useMemo(() => {
     if (selectedFile && selectedFile?.type?.startsWith("image/")) {
-      return URL.createObjectURL(selectedFile)
+      return URL.createObjectURL(selectedFile);
     }
     return null;
-  },[selectedFile]);
+  }, [selectedFile]);
 
   useEffect(() => {
     return () => {
-      if(previewUrl) URL.revokeObjectURL(previewUrl)
-    }
-  },[previewUrl])
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    if(fileRef.current) fileRef.current.value = ""
-  }
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
+ useEffect(() => {
+   const SpeechRecognition =
+     window.SpeechRecognition || window.webkitSpeechRecognition;
 
+   if (!SpeechRecognition) {
+     console.error("Speech Recognition API is not supported");
+     return;
+   }
 
+   const recognition = new SpeechRecognition();
+   recognition.lang = "en-US";
+   recognition.interimResults = true;
+   recognition.continuous = true;
+
+   recognition.onresult = (event) => {
+     let transcript = "";
+     for (let i = 0; i < event.results.length; i++) {
+       transcript += event.results[i][0].transcript;
+     }
+     setValue(`${baseTextRef.current} ${transcript}`.trim());
+   };
+
+   recognition.onerror = (event) => {
+     console.error("Mic error:", event.error);
+     setListening(false);
+   };
+
+   recognition.onend = () => setListening(false);
+
+   recognitionRef.current = recognition;
+
+   return () => recognition.abort();
+ }, []);
+
+ const toggleMic = () => {
+   const recognition = recognitionRef.current;
+
+   if (!recognition) {
+     alert("Speech Recognition is unavailable");
+     return;
+   }
+
+   if (listening) {
+     recognition.stop();
+     return;
+   }
+
+   baseTextRef.current = value;
+   try {
+     recognition.start();
+     setListening(true);
+   } catch (error) {
+     console.error("Mic start failed:", error);
+   }
+ };
   return (
     <div className="w-full overflow-hidden px-3 md:px-5 py-4 border-t border-white/6 bg-[#0d0f14]">
       <div className="flex flex-col gap-2 bg-white/3 border border-white/7 rounded-2xl px-4 pt-3.5 pb-3">
@@ -172,8 +232,11 @@ disabled:opacity-50"
             >
               <Paperclip size={17} />
             </button>
-            <button className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/5 border border-transparent hover:border-white/6 transition-all duration-150 bg-transparent cursor-pointer">
-              <Mic size={17} />
+            <button
+              onClick={toggleMic}
+              className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-150 cursor-pointer ${listening ? "bg-red-500 text-white" : "text-slate-600 hover:bg-white/5 hover:text-slate-400"}`}
+            >
+              {listening ? <Mic size={17} /> : <MicOff size={17} />}
             </button>
           </div>
           <button
