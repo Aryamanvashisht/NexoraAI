@@ -121,8 +121,8 @@ jobs:
     - name: Deploy Gateway
       run: |
         aws ecs update-service \
-        --cluster ${{secrets.ECS_CLUSTER}} \
-        --service ${{secrets.GATEWAY}} \
+        --cluster ${{secrets.ECS_CLUSTER}} \GATEWAY_SERVICE
+        --service ${{secrets.}} \
         --force-new-deployment
 
 
