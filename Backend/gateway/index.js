@@ -30,7 +30,7 @@ app.use("/billing", protect, proxyWithHeaders(BILLING_SERVICE));
 app.get("/me", protect, getCurrentUser);
 
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  res.send("Hello from gateway");
 });
 
 app.listen(PORT, () => {
