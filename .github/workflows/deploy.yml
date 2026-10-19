@@ -30,7 +30,7 @@ jobs:
 
     - name: Build Gateway
       run: |
-        docker build -f backend/gateway/Dockerfile -t gateway backend 
+        docker build -f Backend/gateway/Dockerfile -t gateway Backend
 
     - name: Tag Gateway
       run: |
@@ -44,7 +44,7 @@ jobs:
 
     - name: Build Auth
       run: |
-        docker build -f backend/services/auth/Dockerfile -t auth-service backend 
+        docker build -f Backend/services/auth/Dockerfile -t auth-service Backend
 
     - name: Tag Auth
       run: |
@@ -58,7 +58,7 @@ jobs:
 
     - name: Build Chat
       run: |
-        docker build -f backend/services/chat/Dockerfile -t chat-service backend 
+        docker build -f Backend/services/chat/Dockerfile -t chat-service Backend
 
     - name: Tag Chat
       run: |
@@ -72,7 +72,7 @@ jobs:
 
     - name: Build Agent
       run: |
-        docker build -f backend/services/agent/Dockerfile -t agent-service backend 
+        docker build -f Backend/services/agent/Dockerfile -t agent-service Backend
 
     - name: Tag Agent
       run: |
@@ -86,7 +86,7 @@ jobs:
 
     - name: Build Billing
       run: |
-        docker build -f backend/services/billing/Dockerfile -t billing-service backend 
+        docker build -f Backend/services/billing/Dockerfile -t billing-service Backend
 
     - name: Tag Billing
       run: |
@@ -133,7 +133,7 @@ jobs:
       
       - name: Build Frontend
         run: |
-          cd frontend
+          cd Frontend
           npm install
           npm run build
 
@@ -146,7 +146,7 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 sync frontend/dist s3://${{secrets.S3_BUCKET}} --delete
+          aws s3 sync Frontend/dist s3://${{secrets.S3_BUCKET}} --delete
 
       - name: Invalidate Cloudfront
         run: |
