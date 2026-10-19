@@ -56,7 +56,7 @@ User Request: ${state.prompt}
     const fileName = `image-${Date.now()}.${ext}`;
     await uploadToS3(fileName, buffer, contentType);
   
-    const downloadUrl = await getFromS3(fileName, 24*60);
+    const downloadUrl = await getFromS3(fileName, 24*60*60);
 
     return {
       aiResponse: `# 🖼️ Image Generated Successfully
